@@ -14,11 +14,10 @@ mu(2) = f(mu(1));
 
 for i = 1:N
     if lambda(2) > mu(2)
-        a = lambda(1);
+        a = lambda(1)
     else
-        b = mu(1);
+        b = mu(1)
     end
-    
     lambda(1) = lambda_f(a,b);
     mu(1) = mu_f(a,b);
     
