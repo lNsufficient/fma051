@@ -1,7 +1,10 @@
-function lambda = newton(lambda,f,f_prim,f_bis,N,h)
+function lambda = newton(lambda,f,f_prim,f_bis,h, tol)
 %NEWTON 
-    if nargin < 6
+    if nargin < 5
         h = 1e-8;
+    end
+    if nargin < 6
+        tol = 1e-6;
     end
 
     if isempty(f_prim)
@@ -16,8 +19,11 @@ function lambda = newton(lambda,f,f_prim,f_bis,N,h)
         f_bis = @(x) (f_prim(x+h) - f_prim(x-h))/(2*h);
     end
 
-    for i = 1:N
-        lambda = lambda-f_prim(lambda)/f_bis(lambda);
+    delta = tol+1;
+    
+    while abs(delta) > tol
+        delta = f_prim(lambda)/f_bis(lambda);
+        lambda = lambda-delta;
     end
 end
 
