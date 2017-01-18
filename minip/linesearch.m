@@ -5,7 +5,7 @@ function [lambda, No_of_iterations]= linesearch(func, x, d)
 tol = 1e-6;
 
 f = @(lambda) func(x+lambda*d);
-h = 1e-6;
+h = tol;
 lambda_start = 0;
 %lambda = newton(lambda_start,f,[],[],h, tol);
 eps = 0.5;
@@ -15,7 +15,7 @@ alpha = 2;
 exact_search = 1;
 if exact_search
     N = 1;
-    lambdas = [lambda; lambda*alpha];
+    lambdas = [lambda; lambda*alpha]
 %     while ((lambdas(2)-lambdas(1))>tol)
 %         f(lambdas(1))
 %         f(lambdas(2))
