@@ -1,14 +1,14 @@
-function j = jac(x, t, y, phi)
+function j = jac(x, t)
 %JAC Summary of this function goes here
 %   Detailed explanation goes here
 
 if length(x) == 2
-    dx = 2*[exp(-x(2)*t), -t*x(1).*exp(-x(2)*t)];
+    dx = [exp(-x(2)*t), -x(1)*t.*exp(-x(2)*t)];
 elseif length(x) == 4
-    dx = 2*[exp(-x(2)*t), -t*x(1).*exp(-x(2)*t), exp(-x(4)*t), -t*x(3).*exp(-x(4)*t)];
+    dx = [exp(-x(2)*t), -x(1)*t.*exp(-x(2)*t), exp(-x(4)*t), -x(3)*t.*exp(-x(4)*t)];
 end
-r = res(phi, x, t,y);
-j = diag(r)*dx;
+%r = res(phi, x, t,y);
+j = dx;
 
 end
 
