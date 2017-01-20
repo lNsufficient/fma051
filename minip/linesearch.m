@@ -13,12 +13,12 @@ f = @(lambda) func(x+lambda*d);
 %lambda = newton(lambda_start,f,[],[],h, tol);
 eps = 0.5;
 alpha = 2;
-[lambda, No_of_iterations, fail] = armijo(f, eps, alpha, tol);
+[lambda, No_of_iterations, fail] = armijo(f, eps, alpha, tol , func_der);
 if fail == 1
     disp('failure, using crudest estimation')
     return
 end
-exact_search = 1;
+exact_search = 0;
 if exact_search
     N = 1;
     lambdas = [0; lambda*alpha];
@@ -30,7 +30,9 @@ if exact_search
 %     end
     [lambdas, nbr_itr] = goldenSection(lambdas(1), lambdas(2), f, tol);
     No_of_iterations = No_of_iterations + nbr_itr;
-    lambda = min([lambda, mean(lambdas)]); %denna rad är onödig sedan vi ändrade i goldenSection
+    [~, index] = min([f(lambda), f(mean(lambdas))]);
+    tmp = [lambda, lambdas];
+    lambda = tmp(index);
 end
 
 if isnan(func(x+lambda*d)) || func(x+lambda*d)>func(x)

@@ -1,7 +1,15 @@
-function [lambda, No_of_iterations, fail] = armijo(f, eps, alpha, tol)
+function [lambda, No_of_iterations, fail] = armijo(f, eps, alpha, tol, func_der)
 %ARMIJO Summary of this function goes here
 %   Detailed explanation goes here
-[f_prim, f_vals, h_min, no_min]= f_der(f, tol);
+if nargin < 5
+    [f_prim, f_vals, h_min, no_min]= f_der(f, tol);
+    f_min = f(h_min);
+else
+    f_prim = func_der;
+    f_vals = [f(0), nan];
+    h_min = nan;
+    f_min = inf;
+end
 if abs(f_prim) < tol*10^-8
     disp('Derivative is zero, Armijo cannot be used')
     lambda = h_min;
@@ -39,7 +47,7 @@ while 1
     end
 end
 
-if f(lambda) > f(h_min)
+if f(lambda) > f_min
     lambda = h_min; %Found smaller value during derivation
 end
 
