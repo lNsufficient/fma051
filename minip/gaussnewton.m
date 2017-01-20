@@ -1,13 +1,15 @@
 function gaussnewton(phi, t, y, start, tol, use_linesearch, printout, plotout)
 %GAUSSNEWTON 
 
-%Print initial data
-clc;
-fprintf('iter \t   x \t  step size \t    f(x)     max(abs(r))   norm(grad) \t ls iters      lambda      grad*d/norm \n');
 r = res(phi,start,t,y);
-f = sum(r.^2);
-s = print_info(0, start, 0, f, max(abs(r)), 0, 0, 0, 0);
-disp(s)
+%Print initial data
+if printout
+    clc;
+    fprintf('iter \t   x \t  step size \t    f(x)     max(abs(r))   norm(grad) \t ls iters      lambda      grad*d/norm \n');
+    f = sum(r.^2);
+    s = print_info(0, start, 0, f, max(abs(r)), 0, 0, 0, 0);
+    disp(s)
+end
 
 
 
@@ -58,8 +60,10 @@ while (norm(xn-x0) >tol);
     f = sum(r.^2);
     
     itr = itr + 1;
-    s = print_info(itr, xn, norm(dx), f, max(abs(r)), norm(dx), ls_iters, lambda*use_linesearch, gradd);
-    disp(s);
+    if printout
+        s = print_info(itr, xn, norm(dx), f, max(abs(r)), norm(dx), ls_iters, lambda*use_linesearch, gradd);
+        disp(s);
+    end
 end
 
 end
