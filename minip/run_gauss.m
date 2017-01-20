@@ -1,5 +1,5 @@
 clear;
-[t, y] = data1;
+[t, y] = data2;
 
 gaussnewton(@phi2,t,y,[2.7811; 1.3834; 3.2169; 3.0136], 0.01,1,1,1); 
 pause;
