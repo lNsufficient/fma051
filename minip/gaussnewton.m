@@ -37,9 +37,12 @@ end
 itr = 0;
 xn = start; 
 x0 = inf;
+f0 = inf;
 func = @(x) sum(res(phi, x, t, y).^2);
-while (norm(xn-x0) >tol);
+
+while (norm(xn-x0) >(tol) ||(norm(f-f0) >(tol) ));
     x0 = xn;
+    f0 = f;
     J = jac(x0, t);
     A = J'*J;
     Jr = (J'*r); %To be completely sure that this is the only system solved. 
@@ -77,9 +80,15 @@ if plotout
     x_plot = 1:length(f_plot);
     figure (1);
     clf;
-    plot(x_plot, f_plot, '.');
-    hold on;
-    plot(x_plot, f_plot);
+    if f_plot(1)./f_plot(end) > 1e2
+        semilogy(x_plot, f_plot, '.');
+        hold on 
+        semilogy(x_plot, f_plot);
+    else
+        plot(x_plot, f_plot, '.');
+        hold on;
+        plot(x_plot, f_plot);
+    end
 end
 end
 
