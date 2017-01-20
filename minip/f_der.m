@@ -85,10 +85,10 @@ if too_slow_growth_flag == 1
 end
 
 f_vals(2) = f_end;
-f_prim = (f_end - f_start)/h
-f_min
-h_min
-    
-    
+f_prim = (f_end - f_start)/h;
+%disp('f_prim, f_min, h_min')
+format shortg
+f_prim__f_min__h_min = [f_prim, f_min, h_min]
+format short
 
 end

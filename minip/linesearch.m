@@ -5,7 +5,7 @@ function [lambda, No_of_iterations]= linesearch(func, x, d,func_der)
 %would be good as we have the derivative as dfunc = (-2J'*r)'*dx
 
 
-tol = 1e-6;
+tol = 1e-3;
 h = tol;
 lambda_start = 0;
 f = @(lambda) func(x+lambda*d);
@@ -21,7 +21,7 @@ end
 exact_search = 1;
 if exact_search
     N = 1;
-    lambdas = [0; lambda*alpha]
+    lambdas = [0; lambda*alpha];
 %     while ((lambdas(2)-lambdas(1))>tol)
 %         f(lambdas(1))
 %         f(lambdas(2))
@@ -30,7 +30,7 @@ if exact_search
 %     end
     [lambdas, nbr_itr] = goldenSection(lambdas(1), lambdas(2), f, tol);
     No_of_iterations = No_of_iterations + nbr_itr;
-    lambda = mean(lambdas);
+    lambda = mean(lambdas); %denna rad är onödig sedan vi ändrade i goldenSection
 end
 
 if isnan(func(x+lambda*d)) || func(x+lambda*d)>func(x)
