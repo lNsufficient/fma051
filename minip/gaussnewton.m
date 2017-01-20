@@ -32,14 +32,18 @@ disp(s)
 itr = 0;
 xn = start; 
 x0 = inf;
-
+func = @(x) sum(res(phi, x, t, y).^2);
 while (norm(xn-x0) >tol);
     x0 = xn;
     J = jac(x0, t);
     A = J'*J;
     Jr = (J'*r); %To be completely sure that this is the only system solved. 
     dx = A\Jr;
-    xn = x0-0.01*dx;
+    gradF = 2*J'*r;
+    f_der = -gradF'*dx
+
+    lambda = linesearch(func, x0,-dx,f_der);
+    xn = x0-lambda*dx;
     
     
     %calculate stuff

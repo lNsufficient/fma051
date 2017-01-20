@@ -1,29 +1,14 @@
-function [f_prim, f_vals, no_min]= f_der(f, h)
+function [f_prim, f_vals, h_min, no_min]= f_der(f, h)
 %Calculates the derivative. 
 %f_prim derivative function handle
+h_min = nan;
+f_min = inf;
 
 no_min = [0;0];
 f_vals = [nan; nan];
 h_start = h;
 too_slow_growth_flag = 0;
-%Vi valde att inte använda second order derivative, för då finns risk att
-%vi tittar utanför det godkända området. 
-% f_start = f(x-h/2);
-% while(isinf(f_start) ||isnan(f_start))
-%     if f_start == -inf
-%         no_min = [1;x-h/2];
-%         return 
-%     end
-%     h_old = h;
-%     h = h/2;
-%     if h_old == h
-%         f_start = f(x);
-%         h = h_start*2;
-%         break;
-%     else
-%         f_start = f(x-h/2);
-%     end
-% end
+
 f_start = f(0);
 if f_start == -inf
     f_vals(1) = -inf;
@@ -34,7 +19,17 @@ end
 
 f_vals(1) = f_start;
 f_end = f(h);
+if (f(h) < f_min)
+    h_min = h;
+    f_min = f(h);
+end
+    
 while (isinf(f_end)||isnan(f_start)||(f_end>=f_start))
+    if (f(h) < f_min)
+        h_min = h;
+        f_min = f(h);
+    end
+    
     if f_end == -inf
         no_min = [1; h];
         f_prim = -inf;
@@ -60,30 +55,39 @@ if too_slow_growth_flag == 1
     %than machine epsillon for all h. Now we move h in the opposite
     %direction, the approximation is worse but atleast armijo will yield
     %something useful
-    h = h_start; 
+    h = h_start;
     while (isinf(f_end)||isnan(f_start)||(f_end>=f_start))
-    if f_end == -inf
-        no_min = [1; h];
-        f_prim = -inf;
-        f_vals(2) = -inf;
-        return;
-    end
-    h_old = h;
-    h = 2*h;
-    if  isinf(h)
-        f_end = f(0); %No differences on the entire interval
-        h = h_start;
-        disp('Could not find any suitible LARGE h either')
-        break;
-    else
-        f_end = f(h);
-    end
+        if (f(h) < f_min)
+            h_min = h;
+            f_min = f(h);
+        end
+        if f_end == -inf
+            no_min = [1; h];
+            f_prim = -inf;
+            f_vals(2) = -inf;
+            return;
+        end
+        h_old = h;
+        h = 2*h;
+        if  isinf(h)
+            f_end = f(0); %No differences on the entire interval
+            h = h_start;
+            disp('Could not find any suitible LARGE h either')
+            break;
+        else
+            f_end = f(h);
+            if (f(h) < f_min)
+                h_min = h;
+                f_min = f(h);
+            end
+        end
     end
 end
 
 f_vals(2) = f_end;
-f_prim = (f_end - f_start)/h;
-
+f_prim = (f_end - f_start)/h
+f_min
+h_min
     
     
 
