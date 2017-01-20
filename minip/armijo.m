@@ -10,7 +10,7 @@ else
     h_min = nan;
     f_min = inf;
 end
-if abs(f_prim) < tol*10^-8
+if abs(f_prim) < tol*10^-16
     disp('Derivative is zero, Armijo cannot be used')
     lambda = h_min;
     No_of_iterations = 0;
