@@ -30,7 +30,7 @@ if exact_search
 %     end
     [lambdas, nbr_itr] = goldenSection(lambdas(1), lambdas(2), f, tol);
     No_of_iterations = No_of_iterations + nbr_itr;
-    lambda = mean(lambdas); %denna rad är onödig sedan vi ändrade i goldenSection
+    lambda = min([lambda, mean(lambdas)]); %denna rad är onödig sedan vi ändrade i goldenSection
 end
 
 if isnan(func(x+lambda*d)) || func(x+lambda*d)>func(x)
