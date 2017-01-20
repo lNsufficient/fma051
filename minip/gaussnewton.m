@@ -40,7 +40,8 @@ while (norm(xn-x0) >tol);
     Jr = (J'*r); %To be completely sure that this is the only system solved. 
     dx = A\Jr;
     gradF = 2*J'*r;
-    f_der = -gradF'*dx
+    f_der = -gradF'*dx;
+    dx = dx/norm(dx);
 
     lambda = linesearch(func, x0,-dx,f_der);
     xn = x0-lambda*dx;
