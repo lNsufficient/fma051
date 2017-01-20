@@ -39,10 +39,17 @@ while (norm(xn-x0) >tol);
     A = J'*J;
     Jr = (J'*r); %To be completely sure that this is the only system solved. 
     dx = A\Jr;
-    gradF = 2*J'*r;
-    f_der = -gradF'*dx
-
-    lambda = linesearch(func, x0,-dx,f_der);
+    
+    if use_linesearch
+        gradF = 2*J'*r;
+        f_der = -gradF'*dx;
+        gradd = f_der/norm(dx);
+        [lambda, ls_iters] = linesearch(func, x0,-dx,f_der);
+    else
+        lambda = 1;
+        ls_iters = 0;
+        gradd = 0;
+    end
     xn = x0-lambda*dx;
     
     
@@ -51,7 +58,7 @@ while (norm(xn-x0) >tol);
     f = sum(r.^2);
     
     itr = itr + 1;
-    s = print_info(itr, xn, norm(dx), f, max(abs(r)), norm(dx), 0, 0, 0);
+    s = print_info(itr, xn, norm(dx), f, max(abs(r)), norm(dx), ls_iters, lambda*use_linesearch, gradd);
     disp(s);
 end
 
