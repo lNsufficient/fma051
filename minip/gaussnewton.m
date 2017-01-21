@@ -1,4 +1,4 @@
-function gaussnewton(phi, t, y, start, tol, use_linesearch, printout, plotout)
+function [xn, f] = gaussnewton(phi, t, y, start, tol, use_linesearch, printout, plotout)
 %GAUSSNEWTON 
 
 r = res(phi,start,t,y);
