@@ -22,7 +22,7 @@ if fail == 1
     disp('failure, using crudest estimation')
     return
 end
-exact_search = 0;
+exact_search = 1;
 if exact_search
     N = 1;
     lambdas = [0; lambda*alpha];
