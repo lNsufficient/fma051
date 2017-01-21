@@ -1,4 +1,4 @@
-function gaussnewton(phi, t, y, start, tol, use_linesearch, printout, plotout)
+function [f, x] = gaussnewton(phi, t, y, start, tol, use_linesearch, printout, plotout)
 %GAUSSNEWTON 
 
 r = res(phi,start,t,y);
@@ -36,12 +36,16 @@ end
 make_posdef  = 1;
 cond_eps = 1e-6;
 cond_tol = 1e16;
+gradd_tol = 100;
+gradd = inf;
 itr_max = 150;
 itr = 0;
 xn = start; 
 x0 = inf;
 func = @(x) sum(res(phi, x, t, y).^2);
-while ((norm(xn-x0) >tol) && itr < itr_max);
+while (((norm(xn-x0) >tol) && itr < itr_max) || (gradd > gradd_tol));
+
+        
     x0 = xn;
     J = jac(x0, t);
     A = J'*J;
@@ -51,7 +55,7 @@ while ((norm(xn-x0) >tol) && itr < itr_max);
         %A' = A since A = J'*J;
         [R, p] = chol(A);
         while ((p > 0) || cond(A) > cond_tol)
-            p_cond = [p, cond(A)]
+            p_cond = [p, cond(A)];
             A = A + cond_eps *10^i* eye(size(A));
             [R, p] = chol(A);
             i = i+1;
@@ -73,15 +77,15 @@ while ((norm(xn-x0) >tol) && itr < itr_max);
     dx = dx/norm(dx);
 
     lambda = linesearch(func, x0,-dx);
+    gradF = 2*J'*r;
+    f_der = -gradF'*dx;
+    gradd = f_der/norm(dx);
+    
     if use_linesearch
-        gradF = 2*J'*r;
-        f_der = -gradF'*dx;
-        gradd = f_der/norm(dx);
         [lambda, ls_iters] = linesearch(func, x0,-dx,f_der);
     else
         lambda = 1;
         ls_iters = 0;
-        gradd = 0;
     end
     xn = x0-lambda*dx;
     
@@ -99,7 +103,15 @@ while ((norm(xn-x0) >tol) && itr < itr_max);
     if plotout
         f_plot = [f_plot, f];
     end
+    
+    if (abs(gradd) > gradd_tol && norm(xn-x0) <= tol)
+        v = null(dx');
+        v = v(:,1);
+        xn = x0 + v/norm(v);
+    end
 end
+
+x = xn;
 
 if plotout
     x_plot = 1:length(f_plot);
