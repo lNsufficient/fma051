@@ -13,7 +13,11 @@ f = @(lambda) func(x+lambda*d);
 %lambda = newton(lambda_start,f,[],[],h, tol);
 eps = 0.5;
 alpha = 2;
-[lambda, No_of_iterations, fail] = armijo(f, eps, alpha, tol , func_der);
+if nargin < 4
+    [lambda, No_of_iterations, fail] = armijo(f, eps, alpha, tol);
+else    
+    [lambda, No_of_iterations, fail] = armijo(f, eps, alpha, tol , func_der);
+end
 if fail == 1
     disp('failure, using crudest estimation')
     return

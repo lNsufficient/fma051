@@ -33,29 +33,46 @@ end
 % 
 % s = print_info(itr, xn, norm(dx), f, max(abs(r)), norm(dx), 0, 0, 0);
 % disp(s)
+make_posdef  = 1;
 cond_eps = 1e-6;
 cond_tol = 1e16;
+itr_max = 150;
 itr = 0;
 xn = start; 
 x0 = inf;
 func = @(x) sum(res(phi, x, t, y).^2);
-while (norm(xn-x0) >tol);
+while ((norm(xn-x0) >tol) && itr < itr_max);
     x0 = xn;
     J = jac(x0, t);
     A = J'*J;
     Jr = (J'*r); %To be completely sure that this is the only system solved. 
     i = 0;
-    while cond(A) > cond_tol
-        A_cond = cond(A)
-        A = A + cond_eps *10^i* eye(size(A));
-        i = i+1;
+    if make_posdef
+        %A' = A since A = J'*J;
+        [R, p] = chol(A);
+        while ((p > 0) || cond(A) > cond_tol)
+            p_cond = [p, cond(A)]
+            A = A + cond_eps *10^i* eye(size(A));
+            [R, p] = chol(A);
+            i = i+1;
+        end
+    else
+        while cond(A) > cond_tol
+            A_cond = cond(A)
+            A = A + cond_eps *10^i* eye(size(A));
+            i = i+1;
+        end
     end
-    dx = A\Jr;
+    if make_posdef
+        dx = R\(R'\Jr);
+    else
+        dx = A\Jr;
+    end
     gradF = 2*J'*r;
     f_der = -gradF'*dx;
     dx = dx/norm(dx);
 
-    lambda = linesearch(func, x0,-dx,f_der);
+    lambda = linesearch(func, x0,-dx);
     if use_linesearch
         gradF = 2*J'*r;
         f_der = -gradF'*dx;
