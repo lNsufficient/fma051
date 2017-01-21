@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 function [xn, f] = gaussnewton(phi, t, y, start, tol, use_linesearch, printout, plotout)
 %GAUSSNEWTON 
 
