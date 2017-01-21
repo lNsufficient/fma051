@@ -33,7 +33,8 @@ end
 % 
 % s = print_info(itr, xn, norm(dx), f, max(abs(r)), norm(dx), 0, 0, 0);
 % disp(s)
-
+cond_eps = 1e-6;
+cond_tol = 1e16;
 itr = 0;
 xn = start; 
 x0 = inf;
@@ -43,6 +44,12 @@ while (norm(xn-x0) >tol);
     J = jac(x0, t);
     A = J'*J;
     Jr = (J'*r); %To be completely sure that this is the only system solved. 
+    i = 0;
+    while cond(A) > cond_tol
+        A_cond = cond(A)
+        A = A + cond_eps *10^i* eye(size(A));
+        i = i+1;
+    end
     dx = A\Jr;
     gradF = 2*J'*r;
     f_der = -gradF'*dx;
