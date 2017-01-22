@@ -23,7 +23,7 @@ for k = 1:length(sigmas)
         
         current_ind = (k-1)*samples + j;
         f_vals(current_ind) = abs(f-opt);
-        distances(current_ind) = min(norm(x_n-opt_x),norm(x_n-opt_x2));
+        distances(current_ind) = min(norm(X(:,j)-opt_x),norm(X(:,j)-opt_x2));
         
         if abs(f-opt) < 0.1
             sucess(k) = sucess(k) +1;
@@ -33,9 +33,11 @@ end
 
 figure(1)
 plot(sigmas, sucess/samples)
-title('Stability of program for Gaussian starting points around minima')
+hold on
+plot(sigmas, sucess/samples, '.')
+title('Stability for Gaussian starting points around minima')
 xlabel('Standard deviation of parameters (x-values)')
-ylabel('Percentage of samples which converged to minima')
+ylabel('Percentage that converged to minima')
 
 figure(2)
 max_y = 200;

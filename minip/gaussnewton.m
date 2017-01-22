@@ -74,9 +74,10 @@ while (((norm(xn-x0) >tol) && itr < itr_max) || (gradd > gradd_tol));
     end
     gradF = 2*J'*r;
     f_der = -gradF'*dx;
-    dx = dx/norm(dx);
-
-    lambda = linesearch(func, x0,-dx);
+    if use_linesearch
+        dx = dx/norm(dx);
+    end
+    %lambda = linesearch(func, x0,-dx);
     gradF = 2*J'*r;
     f_der = -gradF'*dx;
     gradd = f_der/norm(dx);
@@ -86,6 +87,7 @@ while (((norm(xn-x0) >tol) && itr < itr_max) || (gradd > gradd_tol));
     else
         lambda = 1;
         ls_iters = 0;
+        %gradd = 0;
     end
     xn = x0-lambda*dx;
     
@@ -96,7 +98,7 @@ while (((norm(xn-x0) >tol) && itr < itr_max) || (gradd > gradd_tol));
     
     itr = itr + 1;
     if printout
-        s = print_info(itr, xn, norm(dx), f, max(abs(r)), norm(dx), ls_iters, lambda*use_linesearch, gradd);
+        s = print_info(itr, xn, norm(dx), f, max(abs(r)), norm(dx), ls_iters, lambda, gradd);
         disp(s);
     end
     
